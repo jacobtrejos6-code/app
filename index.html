@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mindnissi Pro | App de Psicología Clínica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Configuración para convertir la Web en una PWA (App Móvil Instalable) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#070a12">
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,{
+        %22name%22: %22Mindnissi Pro%22,
+        %22short_name%22: %22Mindnissi%22,
+        %22start_url%22: %22.%22,
+        %22display%22: %22standalone%22,
+        %22background_color%22: %22%23070a12%22,
+        %22theme_color%22: %22%23070a12%22,
+        %22icons%22: [{
+            %22src%22: %22https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=192&h=192&auto=format&fit=crop%22,
+            %22sizes%22: %22192x192%22,
+            %22type%22: %22image/png%22
+        }]
+    }">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #070a12;
+            color: #f1f5f9;
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .hero-bg {
+            background: linear-gradient(rgba(7, 10, 18, 0.82), rgba(7, 10, 18, 0.94)), 
+                        url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+        .app-phone-container {
+            width: 100%;
+            max-width: 390px;
+            height: 720px;
+            background: #080c18;
+            border: 4px solid #1e293b;
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-sky-500 selection:text-white">
+
+    <!-- ================= NAVBAR SUPERIOR COMERCIAL ================= -->
+    <header class="glass-card sticky top-0 z-50 px-6 py-4 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="cambiarVista('landing')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center font-black text-xl text-white shadow-lg">🧠</div>
+                <div>
+                    <h1 class="font-bold text-sm tracking-wide text-white">Mindnissi <span class="text-sky-400 font-light">App Pro</span></h1>
+                    <p class="text-[10px] text-slate-400 tracking-wider uppercase font-semibold">Clínica & Software Móvil</p>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300">
+                <a href="#inicio" onclick="cambiarVista('landing')" class="text-sky-400 hover:text-white transition">Inicio</a>
+                <a href="#servicios" onclick="cambiarVista('landing')" class="hover:text-white transition">Servicios</a>
+                <a href="#trayectoria" onclick="cambiarVista('landing')" class="hover:text-white transition">Trayectoria & Fotos</a>
+                <a href="#testimonios" onclick="cambiarVista('landing')" class="hover:text-white transition">Testimonios</a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <button onclick="instalarAppMovil()" class="hidden sm:flex bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-3 py-2 rounded-xl text-xs font-bold transition shadow-lg items-center gap-1.5">📲 Instalar App</button>
+                <button onclick="abrirModalReferidos()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-xl text-xs font-bold transition shadow-lg">🎁 Referidos</button>
+                <button onclick="cambiarVista('appPaciente')" class="bg-sky-600 hover:bg-sky-500 text-white px-3 py-2 rounded-xl text-xs font-bold transition shadow-lg">📱 Abrir App</button>
+                <button onclick="cambiarVista('psyDashboard')" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-2 rounded-xl text-xs font-bold transition shadow-lg">💻 Psicólogo</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= 1. SITIO WEB COMERCIAL ================= -->
+    <div id="vistaLanding" class="flex-grow flex flex-col space-y-16 pb-20">
+        <section id="inicio" class="hero-bg py-20 px-6 text-center lg:text-left flex items-center justify-center min-h-[550px]">
+            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <span class="bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">App Móvil de Psicología Clínica</span>
+                    <h2 class="text-4xl lg:text-5xl font-black text-white leading-tight">Transforma tu <span class="text-sky-400">Salud Emocional</span> con Mindnissi</h2>
+                    <p class="text-sm text-slate-300 leading-relaxed max-w-lg">Lleva tu proceso terapéutico en una app móvil avanzada con autogestión diaria, analítica de detonantes y atención experta del Dr. Juan David Herrera.</p>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="cambiarVista('appPaciente')" class="bg-sky-600 hover:bg-sky-500 text-white px-6 py-3 rounded-2xl text-xs font-bold transition shadow-lg">Abrir App Interactiva</button>
+                        <button onclick="instalarAppMovil()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-2xl text-xs font-bold transition shadow-lg">📲 Descargar App en tu Celular</button>
+                    </div>
+                </div>
+                <div class="relative flex justify-center">
+                    <div class="glass-card p-6 rounded-3xl max-w-sm w-full space-y-4 shadow-2xl border border-sky-500/30">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-sky-500/20 flex items-center justify-center text-xl">👨‍⚕️</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Dr. Juan David Herrera</h4>
+                                <p class="text-[11px] text-slate-400">Psicólogo Clínico · T.P. #5192</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-300 italic">"Un espacio confidencial y seguro para potenciar tu bienestar mental y el de tu familia."</p>
+                        <div class="bg-emerald-950/60 border border-emerald-800/60 p-3 rounded-2xl text-center text-xs font-bold text-emerald-300 space-y-1">
+                            <p>🟢 App Móvil Sincronizada 24/7</p>
+                            <p class="text-sky-400 text-[11px]">📞 WhatsApp: 3180000000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Servicios -->
+        <section id="servicios" class="max-w-7xl mx-auto px-6 w-full space-y-8">
+            <div class="text-center space-y-2">
+                <h3 class="text-2xl font-black text-white">Nuestros Servicios Terapéuticos</h3>
+                <p class="text-xs text-slate-400">Enfoques personalizados para tu crecimiento personal y bienestar emocional.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-3xl space-y-3">
+                    <div class="text-3xl">🧠</div>
+                    <h4 class="font-bold text-base text-white">Terapia Individual</h4>
+                    <p class="text-xs text-slate-300">Superación de ansiedad, depresión y autoconocimiento profundo.</p>
+                </div>
+                <div class="glass-card p-6 rounded-3xl space-y-3">
+                    <div class="text-3xl">👥</div>
+                    <h4 class="font-bold text-base text-white">Terapia de Pareja y Familiar</h4>
+                    <p class="text-xs text-slate-300">Fortalecimiento de la comunicación y resolución de conflictos vinculares.</p>
+                </div>
+                <div class="glass-card p-6 rounded-3xl space-y-3">
+                    <div class="text-3xl">💻</div>
+                    <h4 class="font-bold text-base text-white">Telepsicología Segura (WebRTC)</h4>
+                    <p class="text-xs text-slate-300">Consultas virtuales cifradas de extremo a extremo[cite: 4] desde cualquier lugar.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trayectoria y Fotos -->
+        <section id="trayectoria" class="max-w-7xl mx-auto px-6 w-full space-y-8">
+            <div class="text-center space-y-2">
+                <h3 class="text-2xl font-black text-white">Trayectoria y Talleres Grupales</h3>
+                <p class="text-xs text-slate-400">Momentos de sanación y espacios comunitarios impartidos por el Dr. Juan David[cite: 16].</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="rounded-2xl overflow-hidden border border-slate-800 shadow-lg">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop" class="w-full h-36 object-cover" alt="Taller">
+                    <div class="p-3 bg-slate-900 text-[11px] font-bold text-slate-300">Talleres Vivenciales de Ansiedad</div>
+                </div>
+                <div class="rounded-2xl overflow-hidden border border-slate-800 shadow-lg">
+                    <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=600&auto=format&fit=crop" class="w-full h-36 object-cover" alt="Consultorio">
+                    <div class="p-3 bg-slate-900 text-[11px] font-bold text-slate-300">Sesiones Clínicas Especializadas</div>
+                </div>
+                <div class="rounded-2xl overflow-hidden border border-slate-800 shadow-lg">
+                    <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop" class="w-full h-36 object-cover" alt="Comunidad">
+                    <div class="p-3 bg-slate-900 text-[11px] font-bold text-slate-300">Encuentros de Bienestar B2B</div>
+                </div>
+                <div class="rounded-2xl overflow-hidden border border-slate-800 shadow-lg">
+                    <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=600&auto=format&fit=crop" class="w-full h-36 object-cover" alt="Conferencia">
+                    <div class="p-3 bg-slate-900 text-[11px] font-bold text-slate-300">Conferencias de Salud Mental</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ================= 2. APP MÓVIL DEL PACIENTE ================= -->
+    <div id="vistaAppPaciente" class="hidden flex-grow flex items-center justify-center bg-black py-8">
+        <div class="app-phone-container text-slate-100">
+            
+            <div class="px-5 pt-4 pb-3 flex justify-between items-center border-b border-slate-800 bg-[#080c18] flex-shrink-0">
+                <div>
+                    <span class="text-[10px] text-sky-400 font-bold uppercase">Mindnissi App Móvil</span>
+                    <h3 class="text-xs font-black text-white">Hola, Daniela 👋</h3>
+                </div>
+                <button onclick="cambiarVista('landing')" class="text-[10px] bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg">Salir</button>
+            </div>
+
+            <!-- Contenido Pestañas de la App -->
+            <div class="flex-grow p-4 space-y-4 overflow-y-auto pb-24">
+                
+                <!-- PESTAÑA 1: DIARIO Y TAREAS -->
+                <div id="tabAppDiario" class="space-y-4">
+                    <div class="bg-gradient-to-r from-sky-950/60 to-indigo-950/60 p-4 rounded-3xl border border-sky-500/30 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-bold text-sky-300 uppercase">📌 Tarea Activa del Dr. Juan David</span>
+                            <span class="text-[9px] bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded">Pendiente</span>
+                        </div>
+                        <p class="text-xs text-slate-200">"Registra 3 momentos de agradecimiento hoy y practica respiración diafragmática en la noche."</p>
+                    </div>
+
+                    <div class="bg-slate-900/90 p-4 rounded-3xl border border-slate-800 space-y-3">
+                        <label class="text-xs font-bold text-slate-200 flex justify-between">
+                            <span>1. ¿Cómo te sientes hoy?</span>
+                            <span class="text-[10px] text-emerald-400">🟢 Sincronizado</span>
+                        </label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="marcarEmo('😊 Feliz')" id="mEmo1" class="p-3 bg-slate-950 border border-slate-800 rounded-2xl text-center text-xs font-bold hover:border-sky-500 transition">😊 Feliz</button>
+                            <button onclick="marcarEmo('😌 Tranquilo')" id="mEmo2" class="p-3 bg-slate-950 border border-slate-800 rounded-2xl text-center text-xs font-bold hover:border-sky-500 transition">😌 Tranquilo</button>
+                            <button onclick="marcarEmo('⚡ Ansioso')" id="mEmo3" class="p-3 bg-slate-950 border border-slate-800 rounded-2xl text-center text-xs font-bold hover:border-sky-500 transition">⚡ Ansioso</button>
+                        </div>
+                        <textarea id="mDetalle" rows="2" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-2xl text-xs text-slate-200 focus:outline-none focus:border-sky-500" placeholder="Escribe el por qué de tu estado emocional..."></textarea>
+                        <button onclick="guardarCheckInApp()" class="w-full bg-sky-600 hover:bg-sky-500 text-white py-2.5 rounded-2xl text-xs font-bold transition shadow">Guardar Registro Diario</button>
+                    </div>
+                </div>
+
+                <!-- PESTAÑA 2: ANALÍTICA Y TEST PSICOMÉTRICOS -->
+                <div id="tabAppAnalitica" class="hidden space-y-4">
+                    <div class="bg-slate-900/90 p-4 rounded-3xl border border-slate-800 space-y-3">
+                        <span class="text-[10px] text-sky-400 font-bold uppercase">📊 Analítica & Test Clínicos (PHQ-9 / GAD-7)</span>
+                        <p class="text-xs text-slate-300">Evolución científica de tu sintomatología:</p>
+                        <div class="space-y-2 text-xs">
+                            <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 flex justify-between">
+                                <span class="text-slate-400">Nivel de Ansiedad (GAD-7):</span>
+                                <span class="text-amber-400 font-bold">Moderado (En descenso)</span>
+                            </div>
+                            <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 flex justify-between">
+                                <span class="text-slate-400">Nivel de Depresión (PHQ-9):</span>
+                                <span class="text-emerald-400 font-bold">Bajo / Estable</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PESTAÑA 3: SOS / CALMA -->
+                <div id="tabAppSos" class="hidden space-y-4">
+                    <div class="bg-gradient-to-b from-sky-950/60 to-indigo-950/60 p-5 rounded-3xl border border-sky-500/30 text-center space-y-3">
+                        <span class="text-[10px] text-sky-400 font-bold uppercase tracking-wider">Protocolo de Calma Inmediata</span>
+                        <h4 class="font-bold text-sm text-white">Respiración Guiada de Caja (4-4-4-4)</h4>
+                        
+                        <div onclick="iniciarRespiracionInteractiva()" id="circuloRespiracion" class="w-24 h-24 mx-auto rounded-full bg-sky-500/20 border-2 border-sky-400 flex flex-col items-center justify-center cursor-pointer hover:bg-sky-500/30 transition shadow-lg">
+                            <span id="txtRespiracionFase" class="text-xs font-black text-sky-300">Iniciar</span>
+                            <span id="txtRespiracionTimer" class="text-[10px] text-slate-300">Toca para guiar</span>
+                        </div>
+
+                        <p class="text-[11px] text-slate-300">Toca el círculo para iniciar el ejercicio guiado de descompresión.</p>
+                        <button onclick="alert('Mensaje de alerta enviado de forma segura al Dr. Juan David Herrera: Necesito orientación prioritaria.')" class="w-full bg-slate-800 hover:bg-slate-700 text-sky-300 border border-sky-500/30 py-2.5 rounded-2xl text-xs font-bold transition">📩 Notificar a mi Terapeuta</button>
+                    </div>
+                </div>
+
+                <!-- PESTAÑA 4: ASISTENTE CLÍNICO IA -->
+                <div id="tabAppChat" class="hidden space-y-3 flex flex-col h-[400px]">
+                    <div class="bg-slate-900 p-2.5 rounded-2xl border border-slate-800 text-center flex-shrink-0 flex justify-between items-center px-3">
+                        <span class="text-[10px] text-sky-400 font-bold uppercase">🤖 Mindnissi Bot (Asistente TCC)</span>
+                        <span id="contadorMensajesGratis" class="text-[9px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-bold">3 mensajes gratis hoy</span>
+                    </div>
+                    <div class="flex-grow bg-slate-950/80 p-3 rounded-2xl border border-slate-800 space-y-3 overflow-y-auto text-xs" id="chatContainer">
+                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 text-slate-300">
+                            👋 Hola Daniela. Soy tu asistente clínico virtual. Cuéntame, ¿cómo te sientes hoy?
+                        </div>
+                    </div>
+                    <div class="flex gap-2 flex-shrink-0 pt-1">
+                        <input type="text" id="inputChatUser" class="flex-grow bg-slate-950 border border-slate-800 px-3 py-2 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-sky-500" placeholder="Escribe tu situación...">
+                        <button onclick="enviarMensajeChat()" class="bg-sky-600 text-white px-4 py-2 rounded-xl text-xs font-bold">Enviar</button>
+                    </div>
+                </div>
+
+                <!-- PESTAÑA 5: BIBLIOTECA ZEN VIP -->
+                <div id="tabAppAudio" class="hidden space-y-4">
+                    <div class="bg-slate-900/90 p-4 rounded-3xl border border-slate-800 space-y-3">
+                        <span class="text-[10px] text-sky-400 font-bold uppercase">🎧 Biblioteca Zen VIP (Dr. Juan David Herrera)</span>
+                        
+                        <div id="reproductorActivo" class="hidden bg-sky-950/60 p-3 rounded-2xl border border-sky-500/40 text-center space-y-2">
+                            <p id="tituloAudioActual" class="text-xs font-bold text-sky-300">Narrando guía clínica...</p>
+                            <button onclick="detenerVozNativa()" class="bg-rose-950 text-rose-300 border border-rose-800 px-3 py-1 rounded-lg text-[10px] font-bold">⏹ Detener Audio</button>
+                        </div>
+
+                        <div class="space-y-2 text-xs">
+                            <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 flex justify-between items-center">
+                                <div>
+                                    <h5 class="font-bold text-white">1. Protocolo de Pánico Agudo</h5>
+                                    <p class="text-[10px] text-slate-400">Anclaje somático y respiración</p>
+                                </div>
+                                <button onclick="reproducirVozNativa('Protocolo de Pánico Agudo', 'Inhala profundo llenando tu abdomen. Sostén el aire cuatro segundos. Exhala lento y concéntrate en relajar tus hombros. Estás a salvo.')" class="bg-sky-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold">▶</button>
+                            </div>
+                            <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 flex justify-between items-center">
+                                <div>
+                                    <h5 class="font-bold text-white">2. Inducción al Sueño Profundo</h5>
+                                    <p class="text-[10px] text-slate-400">Bloqueo de rumiación nocturna</p>
+                                </div>
+                                <button onclick="reproducirVozNativa('Inducción al Sueño Profundo', 'Suelta el control del día. Deja que tus párpados pesen. Ya hiciste suficiente. Respira suave y descansa.')" class="bg-sky-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold">▶</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PESTAÑA 6: PREMIUM (DINÁMICA) -->
+                <div id="tabAppPremium" class="hidden space-y-4">
+                    <!-- ESTADO A: SI NO HA PAGADO -->
+                    <div id="estadoNoPago" class="glass-card p-5 rounded-3xl border border-indigo-500/40 space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 px-2.5 py-0.5 rounded-full font-bold">⭐ Mindnissi Premium Pro</span>
+                            <span class="text-xs font-black text-emerald-400">$34.200 COP / mes</span>
+                        </div>
+                        <h4 class="font-bold text-sm text-white">Desbloquea Todo tu Potencial Terapéutico</h4>
+                        <ul class="text-xs text-slate-300 space-y-1.5">
+                            <li>📊 Test Psicométricos ilimitados (PHQ-9 y GAD-7) con gráficas de evolución científica.</li>
+                            <li>📄 Reporte Clínico Profesional Firmado con Diagnóstico, Qué hacer y Qué no hacer.</li>
+                            <li>🤖 Asistente Clínico Chat Bot <strong>Ilimitado 24/7</strong>.</li>
+                            <li>🎧 Biblioteca Zen VIP completa con programas de pánico y sueño.</li>
+                            <li>💬 Canal Prioritario Directo con el Dr. Juan David Herrera.</li>
+                        </ul>
+
+                        <div class="bg-gradient-to-r from-indigo-950/60 to-purple-950/60 p-3 rounded-2xl border border-indigo-500/30 space-y-1.5">
+                            <p class="text-[11px] font-bold text-indigo-300">🎁 ¡Tienes un 10% de descuento en referidos para tu cuenta premium!</p>
+                            <div class="flex justify-between items-center bg-slate-950 p-2 rounded-xl border border-indigo-500/20 font-mono text-xs">
+                                <span class="text-sky-400 font-bold">MIND-DRJUANDAVID</span>
+                                <button onclick="alert('¡Código aplicado con éxito! 10% de descuento reflejado.')" class="bg-indigo-600 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold">Aplicar</button>
+                            </div>
+                        </div>
+
+                        <button onclick="abrirPasarelaPagos()" class="w-full bg-gradient-to-r from-indigo-600 to-sky-600 text-white py-3 rounded-2xl text-xs font-bold transition shadow-lg shadow-indigo-600/30">Pagar con Nequi, Tarjeta o PSE</button>
+                    </div>
+
+                    <!-- ESTADO B: SI YA PAGÓ -->
+                    <div id="estadoYaPagado" class="hidden space-y-4">
+                        <div class="glass-card p-5 rounded-3xl border border-emerald-500/40 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">🌟 Membresía VIP Activa</span>
+                                <span class="text-[10px] text-slate-400">Renovación: 08 Dic</span>
+                            </div>
+                            <h4 class="font-bold text-sm text-white">Tu Panel Pro está Desbloqueado</h4>
+                        </div>
+
+                        <div class="space-y-2 text-xs">
+                            <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 flex justify-between items-center">
+                                <div>
+                                    <h5 class="font-bold text-white">📊 Test Psicométricos Ilimitados</h5>
+                                    <p class="text-[10px] text-slate-400">PHQ-9 y GAD-7 con gráficas</p>
+                                </div>
+                                <button onclick="navegarAppTab('analitica')" class="bg-sky-600 text-white px-3 py-1.5 rounded-xl font-bold shadow">Ver Gráficas</button>
+                            </div>
+                            <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 flex justify-between items-center">
+                                <div>
+                                    <h5 class="font-bold text-white">📄 Reporte Clínico Profesional</h5>
+                                    <p class="text-[10px] text-slate-400">Diagnóstico, qué hacer y no hacer</p>
+                                </div>
+                                <button onclick="descargarPDFReal()" class="bg-sky-600 text-white px-3 py-1.5 rounded-xl font-bold shadow">Descargar PDF</button>
+                            </div>
+                            <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 flex justify-between items-center">
+                                <div>
+                                    <h5 class="font-bold text-white">🤖 Asistente IA Ilimitado 24/7</h5>
+                                    <p class="text-[10px] text-slate-400">Contención en crisis activa</p>
+                                </div>
+                                <button onclick="navegarAppTab('chat')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl font-bold shadow">Ir al Chat</button>
+                            </div>
+                            <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 flex justify-between items-center">
+                                <div>
+                                    <h5 class="font-bold text-white">🎧 Biblioteca Zen VIP</h5>
+                                    <p class="text-[10px] text-slate-400">Programas de pánico y sueño</p>
+                                </div>
+                                <button onclick="navegarAppTab('audio')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl font-bold shadow">Abrir Audios</button>
+                            </div>
+                            <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 flex justify-between items-center">
+                                <div>
+                                    <h5 class="font-bold text-white">💬 Canal Prioritario Directo</h5>
+                                    <p class="text-[10px] text-slate-400">Conexión con el Dr. Juan David</p>
+                                </div>
+                                <button onclick="alert('Abriendo canal prioritario seguro con el Dr. Juan David Herrera...')" class="bg-amber-600 text-white px-3 py-1.5 rounded-xl font-bold shadow">Enviar Nota</button>
+                            </div>
+                        </div>
+
+                        <button onclick="reiniciarDemoPago()" class="w-full text-center text-[10px] text-slate-500 underline pt-1">Reiniciar estado de prueba (Volver a no pago)</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Navegación Inferior App -->
+            <div class="absolute bottom-0 left-0 right-0 bg-[#080c18] border-t border-slate-800 p-2 flex justify-around items-center text-[10px] font-bold text-slate-400 flex-shrink-0">
+                <button onclick="navegarAppTab('diario')" id="navDiario" class="text-sky-400 flex flex-col items-center">📖 Diario</button>
+                <button onclick="navegarAppTab('analitica')" id="navAnalitica" class="hover:text-white flex flex-col items-center">📊 Analítica</button>
+                <button onclick="navegarAppTab('sos')" id="navSos" class="hover:text-white flex flex-col items-center">🛠️ SOS</button>
+                <button onclick="navegarAppTab('chat')" id="navChat" class="hover:text-white flex flex-col items-center">🤖 Asistente</button>
+                <button onclick="navegarAppTab('audio')" id="navAudio" class="hover:text-white flex flex-col items-center">🎧 Audios</button>
+                <button onclick="navegarAppTab('premium')" id="navPremium" class="hover:text-white flex flex-col items-center">⭐ Premium</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= 3. PSY-DASHBOARD (PANEL DEL PSICÓLOGO) ================= -->
+    <div id="vistaPsyDashboard" class="hidden flex-grow p-6 max-w-7xl mx-auto w-full space-y-6">
+        <div class="glass-card p-5 rounded-3xl border border-slate-800 flex justify-between items-center">
+            <div>
+                <span class="text-xs text-amber-400 font-bold">💻 PsyDashboard Pro — Clínico y Administrativo</span>
+                <h2 class="text-lg font-bold text-white mt-0.5">Dr. Juan David Herrera <span class="text-xs font-normal text-slate-400">(T.P. #5192)</span></h2>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="abrirModalReferidos()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-xl text-xs font-bold transition">🎁 Referidos Pro</button>
+                <button onclick="cambiarVista('landing')" class="bg-slate-800 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="glass-card p-5 rounded-3xl border border-emerald-500/30 space-y-1">
+                <span class="text-[10px] text-slate-400 uppercase">Facturación Pasiva App (Mes)</span>
+                <h3 class="text-2xl font-black text-emerald-400">$378.00 USD</h3>
+                <p class="text-[11px] text-slate-400">80% directo a tu cuenta conectada.</p>
+            </div>
+            <div class="glass-card p-5 rounded-3xl border border-sky-500/30 space-y-1">
+                <span class="text-[10px] text-slate-400 uppercase">Pacientes Activos en App</span>
+                <h3 class="text-2xl font-black text-white">34 Conectados</h3>
+                <p class="text-[11px] text-slate-400">Racha promedio de uso: 5 días.</p>
+            </div>
+            <div class="glass-card p-5 rounded-3xl border border-rose-500/30 space-y-1">
+                <span class="text-[10px] text-slate-400 uppercase">Alertas Clínicas (Inactividad >72h)</span>
+                <h3 class="text-2xl font-black text-rose-400">1 Paciente</h3>
+                <p class="text-[11px] text-slate-400">Requiere seguimiento prioritario.</p>
+            </div>
+        </div>
+
+        <div class="glass-card p-6 rounded-3xl space-y-4">
+            <h4 class="text-sm font-bold text-white">📋 Matriz de Triaje y Motivos Registrados por los Pacientes en la App</h4>
+            <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead class="bg-slate-900 text-slate-400 uppercase text-[10px] border-b border-slate-800">
+                        <tr>
+                            <th class="p-3.5">Paciente</th>
+                            <th class="p-3.5">Última Actividad</th>
+                            <th class="p-3.5">Estado & Motivo Escrito en la App</th>
+                            <th class="p-3.5">Acciones Clínicas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaMatriz" class="divide-y divide-slate-800/60 bg-slate-950/40"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PASARELA DE PAGOS -->
+    <div id="modalPasarela" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="glass-card border border-sky-500/40 p-6 rounded-3xl max-w-md w-full space-y-4 shadow-2xl relative">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-sky-400">💳 Pasarela Segura Mindnissi Pay</h3>
+                <button onclick="cerrarPasarelaPagos()" class="text-slate-400 hover:text-white font-bold">✕</button>
+            </div>
+            <p class="text-xs text-slate-300">Selecciona tu método de pago con 10% de descuento aplicado ($34.200 COP):</p>
+            
+            <div class="space-y-2 text-xs">
+                <button onclick="procesarPagoExitoso('Nequi / Daviplata')" class="w-full p-3 bg-purple-950/60 border border-purple-800 rounded-2xl text-left font-bold text-purple-200 flex justify-between items-center hover:bg-purple-900/60 transition">
+                    <span>💜 Pagar con Nequi / Daviplata</span>
+                    <span class="text-[10px] bg-purple-900 px-2 py-0.5 rounded">Instantáneo</span>
+                </button>
+                <button onclick="procesarPagoExitoso('Tarjeta de Crédito / Débito')" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-2xl text-left font-bold text-slate-200 flex justify-between items-center hover:bg-slate-800 transition">
+                    <span>💳 Tarjeta de Crédito o Débito</span>
+                    <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded">Visa / Master</span>
+                </button>
+                <button onclick="procesarPagoExitoso('PSE')" class="w-full p-3 bg-slate-900 border border-slate-800 rounded-2xl text-left font-bold text-slate-200 flex justify-between items-center hover:bg-slate-800 transition">
+                    <span>🏦 PSE (Débito Bancario)</span>
+                    <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded">Bancolombia</span>
+                </button>
+            </div>
+
+            <button onclick="cerrarPasarelaPagos()" class="w-full bg-slate-800 py-2 rounded-xl text-xs font-bold text-slate-400">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE REFERIDOS -->
+    <div id="modalReferidos" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="glass-card border border-indigo-500/40 p-6 rounded-3xl max-w-lg w-full space-y-5 shadow-2xl relative">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-base font-bold text-indigo-400">🎁 Programa de Referidos Profesionales</h3>
+                <button onclick="cerrarModalReferidos()" class="text-slate-400 hover:text-white font-bold">✕</button>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">Comparte Mindnissi con otros colegas. Código único: <strong class="text-sky-400">MIND-DRJUANDAVID</strong>. <br>Recuerda: Tus pacientes obtienen un <strong>10% de descuento</strong> al usarlo en su cuenta Premium.</p>
+            <button onclick="cerrarModalReferidos()" class="w-full bg-slate-800 py-2 rounded-xl text-xs font-bold text-slate-300">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="glass-card border-t border-slate-800 py-6 px-6 text-center text-xs text-slate-400 mt-auto space-y-2">
+        <p class="text-sky-400 font-bold text-sm">📲 Síguenos en redes sociales: <span class="text-white underline">@elpsicologosinfiltros</span></p>
+        <p>📞 Número de contacto y WhatsApp: <strong class="text-white">3180000000</strong></p>
+        <p class="text-slate-500 pt-2">Mindnissi Enterprise Suite © 2026 — Psicología Clínica e Innovación Tecnológica</p>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script>
+        let emocionActiva = "😊 Feliz";
+        let temporizadorRespiracion = null;
+        let esPremiumActivo = false;
+        let mensajesRestantesGratis = 3;
+
+        function cambiarVista(vista) {
+            document.getElementById('vistaLanding').classList.add('hidden');
+            document.getElementById('vistaAppPaciente').classList.add('hidden');
+            document.getElementById('vistaPsyDashboard').classList.add('hidden');
+
+            if(vista === 'landing') document.getElementById('vistaLanding').classList.remove('hidden');
+            if(vista === 'appPaciente') document.getElementById('vistaAppPaciente').classList.remove('hidden');
+            if(vista === 'psyDashboard') {
+                document.getElementById('vistaPsyDashboard').classList.remove('hidden');
+                renderizarMatrizClinica();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function instalarAppMovil() {
+            alert("📲 ¡Para instalar Mindnissi como App en tu celular:\n\n• En Android: Toca los tres puntos de tu navegador y selecciona 'Instalar aplicación' o 'Agregar a la pantalla principal'.\n• En iPhone (iOS): Toca el botón de Compartir y selecciona 'Agregar a inicio'.");
+        }
+
+        function navegarAppTab(tab) {
+            const tabs = ['tabAppDiario', 'tabAppAnalitica', 'tabAppSos', 'tabAppChat', 'tabAppAudio', 'tabAppPremium'];
+            const navs = ['navDiario', 'navAnalitica', 'navSos', 'navChat', 'navAudio', 'navPremium'];
+
+            tabs.forEach(t => document.getElementById(t).classList.add('hidden'));
+            navs.forEach(n => document.getElementById(n).style.color = '#94a3b8');
+
+            if(tab === 'diario') {
+                document.getElementById('tabAppDiario').classList.remove('hidden');
+                document.getElementById('navDiario').style.color = '#38bdf8';
+            } else if(tab === 'analitica') {
+                document.getElementById('tabAppAnalitica').classList.remove('hidden');
+                document.getElementById('navAnalitica').style.color = '#38bdf8';
+            } else if(tab === 'sos') {
+                document.getElementById('tabAppSos').classList.remove('hidden');
+                document.getElementById('navSos').style.color = '#38bdf8';
+            } else if(tab === 'chat') {
+                document.getElementById('tabAppChat').classList.remove('hidden');
+                document.getElementById('navChat').style.color = '#38bdf8';
+            } else if(tab === 'audio') {
+                document.getElementById('tabAppAudio').classList.remove('hidden');
+                document.getElementById('navAudio').style.color = '#38bdf8';
+            } else if(tab === 'premium') {
+                document.getElementById('tabAppPremium').classList.remove('hidden');
+                document.getElementById('navPremium').style.color = '#38bdf8';
+            }
+        }
+
+        function marcarEmo(emo) {
+            emocionActiva = emo;
+            document.getElementById('mEmo1').style.borderColor = emo.includes('Feliz') ? '#38bdf8' : '#1e293b';
+            document.getElementById('mEmo2').style.borderColor = emo.includes('Tranquilo') ? '#38bdf8' : '#1e293b';
+            document.getElementById('mEmo3').style.borderColor = emo.includes('Ansioso') ? '#38bdf8' : '#1e293b';
+        }
+
+        let datosPacientesDemo = [
+            { nombre: "Daniela Arias García", conexion: "Justo ahora", estado: "😊 Feliz", motivo: "Motivo: Gran avance en sesión de pareja.", badge: "bg-emerald-950/80 text-emerald-300 border-emerald-800" },
+            { nombre: "Carlos Moreno", conexion: "Hace 20 min", estado: "🟢 Estable (PHQ-9 Bajo)", motivo: "Motivo: Sin incidentes reportados.", badge: "bg-emerald-950/80 text-emerald-300 border-emerald-800" },
+            { nombre: "Sofía Ruiz", conexion: "Hace 3 días", estado: "🟡 Variable (GAD-7 Moderado)", motivo: "Motivo: Estrés acumulado en exámenes.", badge: "bg-amber-950/80 text-amber-300 border-amber-800" },
+            { nombre: "Andrés Pérez", conexion: "Hace 4 días ⚠️", estado: "🔴 Alerta: Inactivo > 72h", motivo: "Motivo: Sin registro reciente.", badge: "bg-rose-950/80 text-rose-300 border-rose-800 animate-pulse" }
+        ];
+
+        function guardarCheckInApp() {
+            const detalle = document.getElementById('mDetalle').value;
+            datosPacientesDemo[0].estado = emocionActiva;
+            datosPacientesDemo[0].motivo = detalle ? `Motivo: "${detalle}"` : "Motivo: Check-in diario rápido.";
+            datosPacientesDemo[0].conexion = "Justo ahora";
+            alert("¡Check-in guardado en la App y sincronizado en tiempo real con el Dr. Juan David Herrera!");
+            document.getElementById('mDetalle').value = "";
+        }
+
+        function iniciarRespiracionInteractiva() {
+            if(temporizadorRespiracion) clearInterval(temporizadorRespiracion);
+            
+            const faseTxt = document.getElementById('txtRespiracionFase');
+            const timerTxt = document.getElementById('txtRespiracionTimer');
+            const circulo = document.getElementById('circuloRespiracion');
+
+            let fases = [
+                { texto: "Inhala 🌬️", segundos: 4 },
+                { texto: "Sostén 🧘", segundos: 4 },
+                { texto: "Exhala 🍃", segundos: 4 },
+                { texto: "Espera ⏳", segundos: 4 }
+            ];
+            let indiceFase = 0;
+
+            circulo.style.borderColor = "#38bdf8";
+            circulo.style.background = "rgba(56, 189, 248, 0.25)";
+
+            function ejecutarCiclo() {
+                let current = fases[indiceFase];
+                let cuenta = current.segundos;
+
+                faseTxt.innerText = current.texto;
+                timerTxt.innerText = `${cuenta}s`;
+
+                let cuentaInt = setInterval(() => {
+                    cuenta--;
+                    if(cuenta > 0) {
+                        timerTxt.innerText = `${cuenta}s`;
+                    } else {
+                        clearInterval(cuentaInt);
+                        indiceFase = (indiceFase + 1) % fases.length;
+                        ejecutarCiclo();
+                    }
+                }, 1000);
+            }
+
+            ejecutarCiclo();
+        }
+
+        function enviarMensajeChat() {
+            const input = document.getElementById('inputChatUser');
+            const container = document.getElementById('chatContainer');
+            const texto = input.value.trim().toLowerCase();
+            if(!texto) return;
+
+            if(!esPremiumActivo && mensajesRestantesGratis <= 0) {
+                alert("🔒 Has agotado tus 3 mensajes gratuitos del día. Suscríbete a Mindnissi Premium para desbloquear chat clínico ilimitado 24/7 y contención en crisis.");
+                navegarAppTab('premium');
+                return;
+            }
+
+            container.innerHTML += `<div class="bg-sky-950/60 p-3 rounded-xl border border-sky-800 text-sky-200 text-right">Tú: ${input.value}</div>`;
+            const userInput = input.value;
+            input.value = "";
+            container.scrollTop = container.scrollHeight;
+
+            if(!esPremiumActivo) {
+                mensajesRestantesGratis--;
+                document.getElementById('contadorMensajesGratis').innerText = `${mensajesRestantesGratis} mensajes gratis hoy`;
+            }
+
+            setTimeout(() => {
+                let respuestaBot = `🤖 Mindnissi Bot: Comprendo lo que me dices sobre "${userInput}". Anota qué pensamiento te vino a la mente primero y recuerda que tu terapeuta Dr. Juan David revisará esto en tu próxima sesión.`;
+
+                if(texto.includes('bien') || texto.includes('tranquila') || texto.includes('tranquilo') || texto.includes('feliz')) {
+                    respuestaBot = `🤖 Mindnissi Bot: ¡Qué alegría leer que estás ${userInput}! Reconocer estos momentos es clave. ¿Qué hiciste hoy diferente que te ayudó?`;
+                } else if(texto.includes('ansiedad') || texto.includes('pánico') || texto.includes('miedo')) {
+                    respuestaBot = `🤖 Mindnissi Bot: Vamos a frenar la ansiedad con la respiración de caja que tienes en la pestaña SOS.`;
+                }
+
+                container.innerHTML += `<div class="bg-slate-900 p-3 rounded-xl border border-slate-800 text-slate-300">${respuestaBot}</div>`;
+                container.scrollTop = container.scrollHeight;
+            }, 600);
+        }
+
+        function reproducirVozNativa(titulo, textoGuia) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            document.getElementById('reproductorActivo').classList.remove('hidden');
+            document.getElementById('tituloAudioActual').innerText = `🎧 Narrando: ${titulo}`;
+
+            const utterance = new SpeechSynthesisUtterance(textoGuia);
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.9;
+            utterance.onend = () => document.getElementById('reproductorActivo').classList.add('hidden');
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function detenerVozNativa() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            document.getElementById('reproductorActivo').classList.add('hidden');
+        }
+
+        function descargarPDFReal() {
+            const contenidoPDF = `
+========================================================================
+             MINDNISSI - REPORTE CLÍNICO PROFESIONAL VIP
+========================================================================
+Paciente: Daniela Arias García
+Terapeuta Asignado: Dr. Juan David Herrera (T.P. #5192)
+Membresía: VIP Activa (Descuento por Referido aplicado)
+Fecha de Emisión: 2026-11-08
+------------------------------------------------------------------------
+
+1. RESUMEN DE EVOLUCIÓN MENSUAL:
+- Racha de Autogestión Constante: 6 Días
+- Estado Emocional Predominante: Estable con episodios de ansiedad situacional.
+- Detonante Principal Identificado por IA: Exigencia laboral nocturna.
+
+2. ORIENTACIÓN DIAGNÓSTICA (BASADA EN TCC):
+Presenta indicadores compatibles con niveles moderados de estrés laboral y rumiación cognitiva nocturna, sin afectar la funcionalidad general. Responde adecuadamente a técnicas de respiración diafragmática.
+
+3. PAUTAS CLÍNICAS - QUÉ HACER:
+- Practicar la técnica de respiración de caja (4-4-4-4) dos veces al día.
+- Establecer un límite de desconexión digital a las 8:00 p.m.
+- Registrar los pensamientos automáticos negativos en el diario de la app antes de dormir.
+
+4. PAUTAS CLÍNICAS - QUÉ NO HACER:
+- Evitar rumiar sobre pendientes laborales fuera del horario de oficina.
+- No automedicarse ni recurrir a estimulantes excesivos (café/bebidas energizantes) en momentos de fatiga.
+- Evitar aislarse de la red de apoyo familiar.
+
+5. PLAN DE ACCIÓN Y SEGUIMIENTO:
+Continuar el uso de los programas de la Biblioteca Zen VIP y asistencia programada en consulta presencial o virtual.
+========================================================================
+Dr. Juan David Herrera - Psicólogo Clínico T.P. #5192
+Mindnissi Enterprise © 2026 - Documento Clínico Confidencial Protegido
+            `;
+            
+            const blob = new Blob([contenidoPDF], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Reporte_Clinico_Profesional_Dr_JuanDavid.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert("¡Reporte clínico profesional firmado descargado con éxito!");
+        }
+
+        function abrirPasarelaPagos() { document.getElementById('modalPasarela').classList.remove('hidden'); }
+        function cerrarPasarelaPagos() { document.getElementById('modalPasarela').classList.add('hidden'); }
+
+        function procesarPagoExitoso(metodo) {
+            cerrarPasarelaPagos();
+            esPremiumActivo = true;
+            document.getElementById('estadoNoPago').classList.add('hidden');
+            document.getElementById('estadoYaPagado').classList.remove('hidden');
+            alert(`🎉 ¡Pago procesado con éxito vía ${metodo} con el 10% de descuento por referido! Membresía VIP y herramientas avanzadas desbloqueadas.`);
+        }
+
+        function reiniciarDemoPago() {
+            esPremiumActivo = false;
+            document.getElementById('estadoYaPagado').classList.add('hidden');
+            document.getElementById('estadoNoPago').classList.remove('hidden');
+        }
+
+        function abrirModalReferidos() { document.getElementById('modalReferidos').classList.remove('hidden'); }
+        function cerrarModalReferidos() { document.getElementById('modalReferidos').classList.add('hidden'); }
+
+        function renderizarMatrizClinica() {
+            const tbody = document.getElementById('tablaMatriz');
+            if(!tbody) return;
+            tbody.innerHTML = datosPacientesDemo.map(p => `
+                <tr class="hover:bg-slate-900/40 transition">
+                    <td class="p-3.5 font-bold text-white">${p.nombre}</td>
+                    <td class="p-3.5 text-slate-400 font-mono text-[11px]">${p.conexion}</td>
+                    <td class="p-3.5 space-y-1">
+                        <span class="px-2.5 py-1 rounded-full border text-[10px] font-semibold ${p.badge}">${p.estado}</span>
+                        <p class="text-[11px] text-slate-300 italic">${p.motivo}</p>
+                    </td>
+                    <td class="p-3.5 flex gap-2">
+                        <button onclick="alert('Abriendo expediente clínico protegido...')" class="bg-slate-800 text-sky-400 px-3 py-1.5 rounded-xl text-[11px]">Ficha</button>
+                        <button onclick="alert('Iniciando sala WebRTC cifrada...')" class="bg-emerald-950 text-emerald-300 px-3 py-1.5 rounded-xl text-[11px]">📹 Videollamada</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
